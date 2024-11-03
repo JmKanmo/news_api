@@ -1,0 +1,85 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  profiles:
+    include: env
+
+  datasource:
+    master:
+      hikari:
+        username: ${DB_MASTER_USERNAME}
+        password: ${DB_MASTER_PASSWORD}
+        driver-class-name: org.mariadb.jdbc.Driver
+        jdbc-url: jdbc:mariadb://${DB_MASTER_IP}:${DB_MASTER_PORT}/${DB_MASTER_SCHEMA}?useUnicode=yes&characterEncoding=UTF-8
+        pool-name: ${DB_MASTER_POOL}
+
+    slave:
+      hikari:
+        username: ${DB_SLAVE_USERNAME}
+        password: ${DB_SLAVE_PASSWORD}
+        driver-class-name: org.mariadb.jdbc.Driver
+        jdbc-url: jdbc:mariadb://${DB_SLAVE_IP}:${DB_SLAVE_PORT}/${DB_SLAVE_SCHEMA}?useUnicode=yes&characterEncoding=UTF-8
+        pool-name: ${DB_SLAVE_POOL}
+
+
+springdoc:
+  cache:
+    disabled: true
+  swagger-ui:
+    path: swagger-ui-custom.html
+  api-docs:
+    path: /api-docs
+  packages-to-scan: com.service.news_agent
+
+
+logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul                                          # Appender pattern for log date format. (Only supported with the default Logback setup.)
+    console: "%magenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-3level) %cyan(- %class{0}.java:%line) %msg %n"
+    file: "[%d{MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:%line] - %msg%n"              # The log pattern to use in a file (if LOG_FILE is enabled). (Only supported with the default Logback setup.)
+    rolling-file-name: "./logs/news_agent/news_agent.%d{yyyy-MM-dd}.%i.log"
+  file: # If defined, it is used in the default log configuration.
+    name: "./logs/news_api.log"
+    max-history: 30                                                                         # Maximum number of archive log files to keep (if LOG_FILE enabled). (Only supported with the default Logback setup.)
+    max-size: 100MB                                                                         # Maximum log file size (if LOG_FILE enabled). (Only supported with the default Logback setup.)
+
+  level:
+    root: info
+    com:
+      mm:
+        sett: debug
+      zaxxer:
+        hikari:
+          HikariConfig: DEBUG
+          pool: off
+    com.mm.sett.api.mapper: off
+    org:
+      springframework:
+        web:
+          client: debug   # display log for SNS interface
+    jdbc:
+      sqlonly: off
+      sqltiming: debug
+      audit: off
+      resultset: off
+      resultsettable: debug
+      connection: off
+    log4jdbc:
+      log4j2: info
+
+
+mybatis:
+  mapper-locations: mybatis/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+
+##### util config #####
+util-config:
+  # HTTP config
+  http_config:
+    connect_time_out: 300 # 5?
+    read_time_out: 300 # 5?
+    write_time_out: 300 # 5?

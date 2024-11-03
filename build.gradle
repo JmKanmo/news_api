@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'com.service'
+version = '1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    // 아래 maven 블록 내 S3 내에 업로드 된 공통 프로젝트의 url, name을 추가로 기입
+    maven {
+        // library repository root URL 정보 등록, upload repository 정보
+        url "https://${project.findProperty('AWS_S3_BUCKET_NAME')}.s3.amazonaws.com/maven/"
+        name "${project.findProperty('AWS_S3_BUCKET_NAME')}"
+    }
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    /**
+     * 공통 라이브러리 (S3 내 패키지 경로에 맞춰서 기입)
+     * 기존의 아래 방식은 최신 버전 갱신이 늦으므로, 최신 버전 기입 후에 dependencies task 수행 후에, 로그/External Libraries 확인
+     * implementation 'com.service:news_common:latest.release'
+     * **/
+    implementation 'com.service:news_common:1.6'
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
