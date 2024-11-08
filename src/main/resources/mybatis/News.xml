@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.news_api.web.mapper.NewsMapper">
-    <resultMap id="newsMap" type="com.service.news_common.domain.News">
+    <resultMap id="newsMap" type="com.service.news_common.dto.NewsDto">
         <result column="NEWS_ID" jdbcType="BIGINT" property="newsId"/>
         <result column="COUNTRY_CODE" jdbcType="VARCHAR" property="countryCode"/>
         <result column="CATEGORY" jdbcType="VARCHAR" property="category"/>
@@ -13,8 +13,44 @@
         <result column="LINK" jdbcType="VARCHAR" property="link"/>
         <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
         <result column="THUNMBNAIL_URL" jdbcType="VARCHAR" property="thumbnailUrl"/>
-        <result column="SOURCE" jdbcType="VARCHAR" property="source.name"/>
+        <result column="SOURCE" jdbcType="VARCHAR" property="source"/>
     </resultMap>
 
+    <select id="selectNewsList" parameterType="com.service.news_common.dto.NewsReq" resultMap="newsMap">
+        select NEWS_ID,
+        COUNTRY_CODE,
+        CATEGORY,
+        PUBLISH_TIME,
+        PUBLISH_MONTH,
+        TITLE,
+        DESCRIPTION,
+        LINK,
+        AUTHOR,
+        THUNMBNAIL_URL,
+        SOURCE
+        from NEWS_INFO
+        <where>
+            <!-- fromDate, toDate 조건절 -->
+            <if test="fromDate != null and toDate != null">
+                PUBLISH_MONTH
+                BETWEEN (YEAR(#{fromDate, jdbcType=TIMESTAMP}) * 100 + MONTH (#{fromDate, jdbcType=TIMESTAMP}))
+                AND (YEAR(#{toDate, jdbcType=TIMESTAMP}) * 100 + MONTH (#{toDate, jdbcType=TIMESTAMP}));
+            </if>
 
+            <!-- COUNTRY CODE (국가) 조건절 -->
+            <if test="country != null">
+                AND COUNTRY_CODE = #{country, jdbcType=VARCHAR}
+            </if>
+
+            <!-- CATEGORY (카테고리) 조건절 -->
+            <if test="country != null">
+                AND CATEGORY = #{category, jdbcType=VARCHAR}
+            </if>
+
+            <!-- TITLE (제목) 조건절 -->
+            <if test="title != null">
+                AND TITLE = #{title, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
 </mapper>

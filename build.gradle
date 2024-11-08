@@ -63,7 +63,7 @@ dependencies {
      * 기존의 아래 방식은 최신 버전 갱신이 늦으므로, 최신 버전 기입 후에 dependencies task 수행 후에, 로그/External Libraries 확인
      * implementation 'com.service:news_common:latest.release'
      * **/
-    implementation 'com.service:news_common:1.6'
+    implementation 'com.service:news_common:1.7'
 }
 
 tasks.named('test') {
