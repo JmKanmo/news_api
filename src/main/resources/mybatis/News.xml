@@ -34,7 +34,7 @@
             <if test="fromDate != null and toDate != null">
                 PUBLISH_MONTH
                 BETWEEN (YEAR(#{fromDate, jdbcType=TIMESTAMP}) * 100 + MONTH (#{fromDate, jdbcType=TIMESTAMP}))
-                AND (YEAR(#{toDate, jdbcType=TIMESTAMP}) * 100 + MONTH (#{toDate, jdbcType=TIMESTAMP}));
+                AND (YEAR(#{toDate, jdbcType=TIMESTAMP}) * 100 + MONTH (#{toDate, jdbcType=TIMESTAMP}))
             </if>
 
             <!-- COUNTRY CODE (국가) 조건절 -->
@@ -43,7 +43,7 @@
             </if>
 
             <!-- CATEGORY (카테고리) 조건절 -->
-            <if test="country != null">
+            <if test="category != null">
                 AND CATEGORY = #{category, jdbcType=VARCHAR}
             </if>
 
