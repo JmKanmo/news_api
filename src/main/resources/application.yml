@@ -30,7 +30,7 @@ springdoc:
     path: swagger-ui-custom.html
   api-docs:
     path: /api-docs
-  packages-to-scan: com.service.news_agent
+  packages-to-scan: com.service.news_api
 
 
 logging:
@@ -38,7 +38,7 @@ logging:
     dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul                                          # Appender pattern for log date format. (Only supported with the default Logback setup.)
     console: "%magenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-3level) %cyan(- %class{0}.java:%line) %msg %n"
     file: "[%d{MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:%line] - %msg%n"              # The log pattern to use in a file (if LOG_FILE is enabled). (Only supported with the default Logback setup.)
-    rolling-file-name: "./logs/news_agent/news_agent.%d{yyyy-MM-dd}.%i.log"
+    rolling-file-name: "./logs/news_api/news_api.%d{yyyy-MM-dd}.%i.log"
   file: # If defined, it is used in the default log configuration.
     name: "./logs/news_api.log"
     max-history: 30                                                                         # Maximum number of archive log files to keep (if LOG_FILE enabled). (Only supported with the default Logback setup.)
